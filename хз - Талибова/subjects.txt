@@ -1,5 +1,0 @@
-
-ООП,Фролов
-OOP,Frolov
-Информатика,Frolov
-Прикол,SDJHBGSDBg
