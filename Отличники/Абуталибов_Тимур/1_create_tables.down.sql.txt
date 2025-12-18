@@ -1,0 +1,10 @@
+-- up.sql
+CREATE TABLE IF NOT EXISTS customers (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS managers (
+    id SERIAL PRIMARY KEY
+    -- добавьте остальные поля
+);

@@ -1,0 +1,38 @@
+package config
+
+import (
+    "log"
+    "github.com/spf13/viper"
+)
+
+func InitConfig() error {
+    viper.SetConfigName("config")
+    viper.SetConfigType("yaml")
+    viper.AddConfigPath(".")
+
+    if err := viper.ReadInConfig(); err != nil {
+        log.Printf("Ошибка чтения конфигурационного файла: %v", err)
+        return err
+    }
+    return nil
+}
+type Config struct {
+    Database DatabaseConfig
+}
+
+type DatabaseConfig struct {
+    Host     string
+    Port     int
+    User     string
+    Password string
+    DBName   string
+}
+
+func GetConfig() *Config {
+    var cfg Config
+    err := viper.Unmarshal(&cfg)
+    if err != nil {
+        log.Fatalf("Ошибка разбора конфигурации: %v", err)
+    }
+    return &cfg
+}

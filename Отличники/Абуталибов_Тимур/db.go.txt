@@ -1,0 +1,80 @@
+package db
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "os"
+    "MicroserviceMessanger/config"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+var pool *pgxpool.Pool
+
+func InitDB() error {
+    cfg := config.GetConfig()
+
+    dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+        cfg.Database.User,
+        cfg.Database.Password,
+        cfg.Database.Host,
+        cfg.Database.Port,
+        cfg.Database.DBName,
+    )
+
+    var err error
+    pool, err = pgxpool.New(context.Background(), dbURL)
+    if err != nil {
+        log.Printf("Ошибка подключения к БД: %v", err)
+        return err
+    }
+
+    // Проверка соединения
+    err = pool.Ping(context.Background())
+    if err != nil {
+        log.Printf("Ошибка пинга базы данных: %v", err)
+        return err
+    }
+
+    return nil
+}
+
+func GetPool() *pgxpool.Pool {
+    return pool
+}
+
+func CloseDB() {
+    if pool != nil {
+        pool.Close()
+    }
+}
+
+import (
+    "github.com/golang-migrate/migrate/v4"
+    "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+func MigrateDB() error {
+    cfg := config.GetConfig()
+
+    m, err := migrate.New(
+        "file://migrations",
+        fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+            cfg.Database.User,
+            cfg.Database.Password,
+            cfg.Database.Host,
+            cfg.Database.Port,
+            cfg.Database.DBName,
+        ),
+    )
+    if err != nil {
+        return err
+    }
+
+    err = m.Up()
+    if err != nil && err != migrate.ErrNoChange {
+        return err
+    }
+    return nil
+}

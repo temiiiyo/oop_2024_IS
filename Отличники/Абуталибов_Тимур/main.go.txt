@@ -1,0 +1,26 @@
+package main
+
+import (
+    "log"
+    "MicroserviceMessanger/config"
+    "MicroserviceMessanger/internal/db"
+    "MicroserviceMessanger/internal/gui"
+)
+
+func main() {
+    // Инициализация конфигурации
+    err := config.InitConfig()
+    if err != nil {
+        log.Fatalf("Ошибка инициализации конфигурации: %v", err)
+    }
+
+    // Подключение к базе данных
+    err = db.InitDB()
+    if err != nil {
+        log.Fatalf("Ошибка подключения к базе данных: %v", err)
+    }
+    defer db.CloseDB()
+
+    // Запуск GUI
+    gui.RunApp()
+}
