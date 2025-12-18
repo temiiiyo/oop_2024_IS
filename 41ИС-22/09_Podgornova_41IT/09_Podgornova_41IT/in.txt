@@ -1,0 +1,7 @@
+Division: Factory Кмпо
+Employee: Worker Шурик
+Employee: Worker Глебас
+Employee: WorkshopManager Леонид Борисович
+Division: Workshop Хлопок
+Employee: Worker Илюха Старцев
+Employee: SectionManager Андрей Дмитриевич Рогов
