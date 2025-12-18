@@ -1,0 +1,7 @@
+1;Anatoly;1
+2;Andrey;4
+3;Katya;3
+4;Phos;16
+5;Guts;5
+6;Griffith;2
+7;Ken;55
