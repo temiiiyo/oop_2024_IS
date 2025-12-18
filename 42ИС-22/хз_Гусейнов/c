@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#define TYPE_NETWORK "нет сети"
+#define TYPE_NOT_POWERED "не включается"
+
+typedef struct {
+    char *type;
+} Application;
+
+void removeNewline(char *str) {
+    size_t len = strlen(str);
+    if (len > 0 && str[len - 1] == '\n') {
+        str[len - 1] = '\0';
+    }
+}
+
+Application createApplication(const char *type) {
+    Application app;
+    app.type = (char *)malloc(strlen(type) + 1);
+
+    if (app.type == NULL) {
+        printf("Ошибка выделения памяти.\n");
+        exit(1);
+    }
+
+    strcpy(app.type, type);
+    return app;
+}
+
+void freeApplication(Application *app) {
+    free(app->type);
+    app->type = NULL;
+}
+
+void calculate(Application *apps, int count) {
+    int networkCount = 0;
+    int notPoweredCount = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (strcmp(apps[i].type, TYPE_NETWORK) == 0) {
+            networkCount++;
+        } else if (strcmp(apps[i].type, TYPE_NOT_POWERED) == 0) {
+            notPoweredCount++;
+        }
+    }
+
+    printf("\nОбщее количество заявок: %d\n", count);
+    printf("Процент заявок 'нет сети': %.2f%%\n",
+           (networkCount * 100.0) / count);
+    printf("Процент заявок 'не включается': %.2f%%\n",
+           (notPoweredCount * 100.0) / count);
+}
+
+int main() {
+
+#ifdef _WIN32
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
+#endif
+
+    int count;
+
+    printf("Введите количество заявок: ");
+    if (scanf("%d", &count) != 1 || count <= 0) {
+        printf("Неверное количество заявок.\n");
+        return 1;
+    }
+
+    getchar();
+
+    Application *applications = (Application *)malloc(count * sizeof(Application));
+    if (applications == NULL) {
+        printf("Ошибка выделения памяти.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        char type[50];
+
+        printf("Введите тип заявки %d ('нет сети' или 'не включается'): ", i + 1);
+
+        if (fgets(type, sizeof(type), stdin) == NULL) {
+            printf("Ошибка ввода.\n");
+            free(applications);
+            return 1;
+        }
+
+        removeNewline(type);
+        applications[i] = createApplication(type);
+    }
+
+    calculate(applications, count);
+
+    for (int i = 0; i < count; i++) {
+        freeApplication(&applications[i]);
+    }
+
+    free(applications);
+    return 0;
+}

@@ -1,0 +1,62 @@
+using System;
+
+interface IState
+{
+    void Handle(Context context);
+    string Name { get; }
+}
+
+class StateA : IState
+{
+    public string Name => "State A";
+
+    public void Handle(Context context)
+    {
+        Console.WriteLine(Name);
+        context.ChangeState(new StateB());
+    }
+}
+
+class StateB : IState
+{
+    public string Name => "State B";
+
+    public void Handle(Context context)
+    {
+        Console.WriteLine(Name);
+        context.ChangeState(new StateA());
+    }
+}
+
+class Context
+{
+    private IState _state;
+
+    public Context(IState initialState)
+    {
+        _state = initialState ?? throw new ArgumentNullException(nameof(initialState));
+    }
+
+    public void ChangeState(IState newState)
+    {
+        _state = newState ?? throw new ArgumentNullException(nameof(newState));
+    }
+
+    public void Request()
+    {
+        _state.Handle(this);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var context = new Context(new StateA());
+
+        for (int i = 0; i < 5; i++)
+        {
+            context.Request();
+        }
+    }
+}

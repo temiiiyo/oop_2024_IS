@@ -1,0 +1,170 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+
+class Customer
+{
+    public string Name { get; }
+    public string Phone { get; }
+
+    public Customer(string name, string phone)
+    {
+        Name = string.IsNullOrWhiteSpace(name) ? "Не указано" : name;
+        Phone = string.IsNullOrWhiteSpace(phone) ? "Не указано" : phone;
+    }
+}
+
+class Product
+{
+    public string Name { get; }
+    public decimal Price { get; }
+    public int Quantity { get; }
+
+    public Product(string name, decimal price, int quantity)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Название товара не задано");
+
+        if (price < 0 || quantity <= 0)
+            throw new ArgumentException("Некорректные данные товара");
+
+        Name = name;
+        Price = price;
+        Quantity = quantity;
+    }
+
+    public decimal Total => Price * Quantity;
+}
+
+class Cashier
+{
+    public string Name { get; }
+    public int EmployeeId { get; }
+
+    public Cashier(string name, int employeeId)
+    {
+        Name = string.IsNullOrWhiteSpace(name) ? "Не указано" : name;
+        EmployeeId = employeeId;
+    }
+}
+
+class Sale
+{
+    public Customer Customer { get; }
+    public Cashier Cashier { get; }
+    public IReadOnlyList<Product> Products => _products.AsReadOnly();
+    public decimal TotalAmount => _totalAmount;
+
+    private readonly List<Product> _products = new();
+    private decimal _totalAmount;
+
+    public Sale(Customer customer, Cashier cashier)
+    {
+        Customer = customer ?? throw new ArgumentNullException(nameof(customer));
+        Cashier = cashier ?? throw new ArgumentNullException(nameof(cashier));
+    }
+
+    public void AddProduct(Product product)
+    {
+        _products.Add(product);
+        _totalAmount += product.Total;
+    }
+
+    public void GenerateReceipt(string filePath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+        using StreamWriter writer = new StreamWriter(filePath);
+        writer.WriteLine("КАССОВЫЙ ЧЕК");
+        writer.WriteLine(new string('-', 35));
+        writer.WriteLine($"Покупатель: {Customer.Name} ({Customer.Phone})");
+        writer.WriteLine($"Кассир: {Cashier.Name} (ID: {Cashier.EmployeeId})");
+        writer.WriteLine($"Дата: {DateTime.Now:dd.MM.yyyy HH:mm}");
+        writer.WriteLine();
+        writer.WriteLine("Товары:");
+
+        foreach (var product in _products)
+        {
+            writer.WriteLine(
+                $"{product.Name,-15} {product.Quantity,3} x {product.Price,8:C} = {product.Total,10:C}"
+            );
+        }
+
+        writer.WriteLine(new string('-', 35));
+        writer.WriteLine($"ИТОГО: {_totalAmount:C}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
+
+        Console.Write("Имя покупателя: ");
+        string customerName = Console.ReadLine() ?? "";
+
+        Console.Write("Телефон покупателя: ");
+        string customerPhone = Console.ReadLine() ?? "";
+
+        Console.Write("Имя кассира: ");
+        string cashierName = Console.ReadLine() ?? "";
+
+        Console.Write("ID кассира: ");
+        int cashierId = ReadInt();
+
+        var customer = new Customer(customerName, customerPhone);
+        var cashier = new Cashier(cashierName, cashierId);
+        var sale = new Sale(customer, cashier);
+
+        Console.WriteLine("\nДобавление товаров (пустое название — завершить)");
+
+        while (true)
+        {
+            Console.Write("Название товара: ");
+            string name = Console.ReadLine() ?? "";
+
+            if (string.IsNullOrWhiteSpace(name))
+                break;
+
+            Console.Write("Цена: ");
+            decimal price = ReadDecimal();
+
+            Console.Write("Количество: ");
+            int quantity = ReadInt();
+
+            try
+            {
+                sale.AddProduct(new Product(name, price, quantity));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+        }
+
+        string filePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            "receipt.txt"
+        );
+
+        sale.GenerateReceipt(filePath);
+
+        Console.WriteLine($"\nЧек сохранён: {filePath}");
+    }
+
+    static int ReadInt()
+    {
+        while (!int.TryParse(Console.ReadLine(), out int value))
+            Console.Write("Введите корректное число: ");
+        return value;
+    }
+
+    static decimal ReadDecimal()
+    {
+        while (!decimal.TryParse(Console.ReadLine(), out decimal value))
+            Console.Write("Введите корректное число: ");
+        return value;
+    }
+}
