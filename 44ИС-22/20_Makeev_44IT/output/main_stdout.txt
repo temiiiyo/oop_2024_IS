@@ -1,0 +1,10 @@
+--- Orders in Progress ---
+Add to Queue: ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Pending, Queue: Queue: ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Pending
+Add to Queue: ID: 2, Customer ID: 2, Date: 2024-01-16 14:45:00, Distance: 800, Status: Pending, Queue: Queue: ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Shipped, ID: 2, Customer ID: 2, Date: 2024-01-16 14:45:00, Distance: 800, Status: Pending
+Add to Queue: ID: 3, Customer ID: 3, Date: 2024-01-17 09:15:00, Distance: 300, Status: Pending, Queue: Queue: ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Shipped, ID: 2, Customer ID: 2, Date: 2024-01-16 14:45:00, Distance: 800, Status: Shipped, ID: 3, Customer ID: 3, Date: 2024-01-17 09:15:00, Distance: 300, Status: Pending
+Warehouse: Склад: ID: 1, Название: Laptop, Цена: 1200.5, Количество: 8, ID: 2, Название: Smartphone, Цена: 800.0, Количество: 14, ID: 3, Название: Headphones, Цена: 150.0, Количество: 29, ID: 4, Название: Tablet, Цена: 600.0, Количество: 6, ID: 5, Название: Mouse, Цена: 25.0, Количество: 47
+--- Process Orders ---
+Delivered order: ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Delivered
+Delivered order: ID: 2, Customer ID: 2, Date: 2024-01-16 14:45:00, Distance: 800, Status: Delivered
+Delivered order: ID: 3, Customer ID: 3, Date: 2024-01-17 09:15:00, Distance: 300, Status: Delivered
+Report generate to orders_report.txt

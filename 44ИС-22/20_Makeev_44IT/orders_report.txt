@@ -1,0 +1,4 @@
+ID: 1, Customer ID: 1, Date: 2024-01-15 10:30:00, Distance: 500, Status: Delivered 
+ID: 2, Customer ID: 2, Date: 2024-01-16 14:45:00, Distance: 800, Status: Delivered 
+ID: 3, Customer ID: 3, Date: 2024-01-17 09:15:00, Distance: 300, Status: Delivered 
+ID: 4, Customer ID: 1, Date: 2024-01-18 16:20:00, Distance: 1200, Status: Pending 

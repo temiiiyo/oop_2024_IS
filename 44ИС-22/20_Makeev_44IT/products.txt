@@ -1,0 +1,5 @@
+1,Laptop,1200.50,10
+2,Smartphone,800.00,15
+3,Headphones,150.00,30
+4,Tablet,600.00,8
+5,Mouse,25.00,50
