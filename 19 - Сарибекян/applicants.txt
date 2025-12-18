@@ -1,3 +1,0 @@
-1, Сарибекян Милена, milena@example.com
-2, Зернина Мария, maria@example.com
-3, Юлдашева Валерия, valeria@example.com
